@@ -4,15 +4,14 @@ Perceptron learning algorithm in python 3.
 
 ## Installation
 
-Instructions on installing  dependencies using a virtual environment coming soon!
-
+See https://pipenv.readthedocs.io/en/latest/install/#installing-pipenv to install *pipenv*, if you do not have it.
 
 ## Usage
 
 **To run this program:**
 ```
-python3.6 main.py
+pipenv run python main.py
 ```
 
 ## Credits
-Learning from Data
+- Abu-Mostafa, Yaser S. *Learning from Data: a Short Course*. AMLBooks, 2012.
