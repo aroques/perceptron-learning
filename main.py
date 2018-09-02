@@ -17,23 +17,39 @@ def main():
 
     true_classes = np.sign(np.dot(x_vectors, w_target))
 
-    pred_classes = np.sign(np.dot(x_vectors, w_hypothesis))
-    misclassified_pts = np.not_equal(pred_classes, true_classes)
+    misclassified_pts = predict_and_evaluate(true_classes, w_hypothesis, x_vectors)
 
-    alpha = 0.005  # step size
+    alpha = 0.003  # step size
+
+    num_iterations = 0
+    num_vect_updates = 0
 
     while np.sum(misclassified_pts) > 0:
         for i, misclassified_pt in enumerate(np.nditer(misclassified_pts)):
             if misclassified_pt:
                 # update rule: w(t + 1) = w(t) + y(t) * x(t) * alpha
                 w_hypothesis += true_classes[i] * x_vectors[i] * alpha
+                num_vect_updates += 1
 
                 plot_hypothesis(ax, pts, true_classes, w_hypothesis, w_target)
 
-        pred_classes = np.sign(np.dot(x_vectors, w_hypothesis))
-        misclassified_pts = np.not_equal(pred_classes, true_classes)
+        misclassified_pts = predict_and_evaluate(true_classes, w_hypothesis, x_vectors)
+
+        num_iterations += 1
 
     plt.show()
+
+    print('target function: y = {0:.2f}x + {1:.2f}'.format(get_slope(w_target), get_y_intercept(w_target)))
+    print('hypothesis : y = {0:.2f}x + {1:.2f}'.format(get_slope(w_hypothesis), get_y_intercept(w_hypothesis)))
+    print('num iterations: ', num_iterations)
+    print('num weight vector updates: ', num_vect_updates)
+    # need final mis-classification error
+
+
+def predict_and_evaluate(true_classes, w_hypothesis, x_vectors):
+    pred_classes = np.sign(np.dot(x_vectors, w_hypothesis))
+    misclassified_pts = np.not_equal(pred_classes, true_classes)
+    return misclassified_pts
 
 
 def setup_axes(ax):
@@ -46,7 +62,7 @@ def setup_axes(ax):
 def get_perpendicular_vect(w):
     # Two lines are perpendicular if: m1 * m2 = -1.
     # The two slopes must be negative reciprocals of each other.
-    m1 = - w[1] / w[2]
+    m1 = get_slope(w)
     m2 = -1 / m1
 
     # m2 = - w[1] / w[2]
@@ -78,11 +94,19 @@ def get_line(w):
 
     # Formula for line is: w1x1 + w2x2 + w0 = 0
     # we let x2 = y, and x1 = x, then solve for y = mx + b
-    slope = - w[1] / w[2]
-    intercept = - w[0] / w[2]
-    y_line = (slope * x_range) + intercept
+    slope = get_slope(w)
+    y_intercept = get_y_intercept(w)
+    y_line = (slope * x_range) + y_intercept
 
     return x_range, y_line
+
+
+def get_y_intercept(w):
+    return - w[0] / w[2]
+
+
+def get_slope(w):
+    return - w[1] / w[2]
 
 
 if __name__ == '__main__':
