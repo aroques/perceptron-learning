@@ -1,8 +1,23 @@
 """
-Helper file that contain functions to help visualize weight vector
+Functions that operate on 2d vectors.
+
+w0 (or x0) is a bias "dummy" weight,
+so even though the vector is 3 dimensional,
+we call it a 2 dimensional vector.
+
 """
 
 import numpy as np
+
+
+def get_perpendicular_vector(w):
+    # Two lines are perpendicular if: m1 * m2 = -1.
+    # The two slopes must be negative reciprocals of each other.
+    m1 = get_slope(w)
+    m2 = -1 / m1
+
+    # m2 = - w[1] / w[2]
+    return np.array([w[0], -1 * m2, 1])
 
 
 def get_line(w, x_bound):
