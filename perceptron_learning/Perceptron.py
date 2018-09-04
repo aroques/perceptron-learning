@@ -37,8 +37,7 @@ class Perceptron:
                     self.w_hypothesis += y_train[i] * x_train[i] * self.alpha
                     logger.num_vector_updates += 1
 
-                    if w_target is not None:
-                        dv.plot_hypothesis(pts, y_train, self.w_hypothesis, w_target)
+                    dv.plot_hypothesis(pts, y_train, self.w_hypothesis, w_target)
 
             misclassified_pts = self.predict_and_evaluate(x_train, y_train)
 

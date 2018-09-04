@@ -19,7 +19,8 @@ class DataVisualizer:
 
     @staticmethod
     def red_pts_above_line(pts, w_target, true_classes):
-        pt_above_line = pts[0, 1] > tdv.get_slope(w_target) * pts[0, 0] + tdv.get_y_intercept(w_target)
+        pt_above_line = tdv.pt_above_line(pts[0, :], w_target)
+
         pt_is_positive_class = true_classes[0] > 0
 
         if pt_above_line and pt_is_positive_class:
@@ -31,24 +32,26 @@ class DataVisualizer:
 
         return False
 
-    def plot_hypothesis(self, pts, true_classes, w_hypothesis, w_target):
+    def plot_hypothesis(self, pts, true_classes, w_hypothesis, w_target=None):
         self.setup_axes()
 
         self.ax.scatter(x=pts[:, 0], y=pts[:, 1], marker='x',
                         color=['r' if sign >= 0 else 'b' for sign in true_classes])
 
-        x, y = tdv.get_line(w_target, self.x_bound)
-        self.ax.plot(x, y, label='target', color='m')
+        if w_target is not None:
+            x, y = tdv.get_line(w_target, self.x_bound)
+            self.ax.plot(x, y, label='target', color='m')
 
         x, y = tdv.get_line(w_hypothesis, self.x_bound)
         self.ax.plot(x, y, label='hypothesis', color='g')
 
-        if self.red_pts_above_line(pts, w_target, true_classes):
-            self.ax.fill_between(x, y, np.full((1,), self.y_bound), color=(1, 0, 0, 0.15))
-            self.ax.fill_between(x, y, np.full((1,), -self.y_bound), color=(0, 0, 1, 0.15))
-        else:
-            self.ax.fill_between(x, y, np.full((1,), self.y_bound), color=(0, 0, 1, 0.15))
-            self.ax.fill_between(x, y, np.full((1,), -self.y_bound), color=(1, 0, 0, 0.15))
+        if w_target is not None:
+            if self.red_pts_above_line(pts, w_target, true_classes):
+                self.ax.fill_between(x, y, np.full((1,), self.y_bound), color=(1, 0, 0, 0.15))
+                self.ax.fill_between(x, y, np.full((1,), -self.y_bound), color=(0, 0, 1, 0.15))
+            else:
+                self.ax.fill_between(x, y, np.full((1,), self.y_bound), color=(0, 0, 1, 0.15))
+                self.ax.fill_between(x, y, np.full((1,), -self.y_bound), color=(1, 0, 0, 0.15))
 
         self.ax.legend(facecolor='w', fancybox=True, frameon=True, edgecolor='black', borderpad=1)
 

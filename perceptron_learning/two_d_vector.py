@@ -34,6 +34,10 @@ def get_line(w, x_bound):
     return x_range, y_line
 
 
+def pt_above_line(pt, w):
+    return pt[1] > get_slope(w) * pt[0] + get_y_intercept(w)
+
+
 def get_y_intercept(w):
     return - w[0] / w[2]
 
