@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from . import two_d_vector as tdv
 
 
-class DataVisualizer():
+class DataVisualizer:
     def __init__(self, title, x_bound, y_bound):
         plt.style.use('seaborn-whitegrid')
         self.fig, self.ax = plt.subplots()

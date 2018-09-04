@@ -1,6 +1,6 @@
 import numpy as np
 from perceptron_learning \
-    import Logger, Perceptron, two_d_vector as tdv, DataVisualizer
+    import Logger, two_d_vector as tdv, DataVisualizer
 
 x_bound = y_bound = bound = 100
 num_points = 50
@@ -17,8 +17,6 @@ def main():
     w_target = tdv.get_perpendicular_vector(w_hypothesis)
 
     alpha = 0.003
-
-    # perceptron = Perceptron(alpha)
 
     true_classes = np.sign(np.dot(x_vectors, w_target))
 
