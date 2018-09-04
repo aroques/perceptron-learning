@@ -2,8 +2,6 @@
 Logs statistics
 """
 
-from . import two_d_vector as tdv
-
 
 class Logger:
     def __init__(self):
@@ -13,4 +11,3 @@ class Logger:
     def print_statistics(self):
         print('{:24s}: {:}'.format('Number of iterations', self.num_iterations))
         print('{:24s}: {:}'.format('Number of vector updates', self.num_vector_updates))
-        # need final mis-classification error
