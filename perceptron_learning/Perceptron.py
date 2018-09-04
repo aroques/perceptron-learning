@@ -9,6 +9,8 @@ class Perceptron:
     def __init__(self, alpha):
         self.alpha = alpha
         self.w_hypothesis = np.random.uniform(-10, 10, 3)
+        self.logger = Logger()
+        self.dv = None
 
     def fit(self, x_train, y_train=None, w_target=None):
         """Fits the model to the training data (class labels) or target function.
@@ -24,31 +26,42 @@ class Perceptron:
 
         pts = x_train[:, 1:]
 
-        dv = DataVisualizer('Perceptron Learning', x_bound, y_bound)
+        self.dv = DataVisualizer('Perceptron Learning', x_bound, y_bound)
 
         misclassified_pts = self.predict_and_evaluate(x_train, y_train)
 
-        logger = Logger()
+        self.logger = Logger()
 
-        while np.sum(misclassified_pts) > 0:
+        while self.logger.num_vector_updates < 150 and np.sum(misclassified_pts) > 0:
             for i, misclassified_pt in enumerate(np.nditer(misclassified_pts)):
                 if misclassified_pt:
                     # update rule: w(t + 1) = w(t) + y(t) * x(t) * alpha
                     self.w_hypothesis += y_train[i] * x_train[i] * self.alpha
-                    logger.num_vector_updates += 1
+                    self.logger.num_vector_updates += 1
 
-                    dv.plot_hypothesis(pts, y_train, self.w_hypothesis, w_target)
+                    self.dv.plot_hypothesis(pts, y_train, self.w_hypothesis, w_target)
 
             misclassified_pts = self.predict_and_evaluate(x_train, y_train)
 
-            logger.num_iterations += 1
+            self.logger.num_iterations += 1
 
-        if w_target is not None:
-            logger.print_statistics(w_target, self.w_hypothesis)
-
-        dv.visualize()
+        self.print_fit_statistics()
 
     def predict_and_evaluate(self, x_train, y_train):
-        pred_classes = np.sign(np.dot(x_train, self.w_hypothesis))
+        pred_classes = self.predict(x_train)
         misclassified_pts = np.not_equal(pred_classes, y_train)
         return misclassified_pts
+
+    def print_fit_statistics(self):
+        self.logger.print_statistics()
+
+        print('{:24s}: y = {:.2f}x + {:.2f}'.format('Hypothesis',
+                                                    tdv.get_slope(self.w_hypothesis),
+                                                    tdv.get_y_intercept(self.w_hypothesis)))
+
+    def visualize_training(self):
+        self.dv.visualize()
+
+    def predict(self, x):
+        return np.sign(np.dot(x, self.w_hypothesis))
+
