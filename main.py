@@ -15,7 +15,7 @@ def main():
 
     w_target = np.random.uniform(-10, 10, 3)
 
-    perceptron.fit(x_train, w_target)
+    perceptron.fit(x_train, w_target=w_target)
 
 
 if __name__ == '__main__':
