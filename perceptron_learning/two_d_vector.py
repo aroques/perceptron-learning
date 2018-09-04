@@ -8,6 +8,7 @@ we call it a 2 dimensional vector.
 """
 
 import numpy as np
+from random import uniform
 
 
 def get_perpendicular_vector(w):
@@ -17,7 +18,8 @@ def get_perpendicular_vector(w):
     m2 = -1 / m1
 
     # m2 = - w[1] / w[2]
-    return np.array([w[0], -1 * m2, 1])
+    random_num = uniform(0, 10)
+    return np.array([uniform(0, 10), -1 * m2 * random_num, random_num])
 
 
 def get_line(w, x_bound):

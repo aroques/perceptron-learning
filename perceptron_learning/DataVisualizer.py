@@ -17,6 +17,20 @@ class DataVisualizer:
         self.ax.set_xlim(-self.x_bound, self.x_bound)
         self.ax.set_ylim(-self.y_bound, self.y_bound)
 
+    @staticmethod
+    def red_pts_above_line(pts, w_target, true_classes):
+        pt_above_line = pts[0, 1] > tdv.get_slope(w_target) * pts[0, 0] + tdv.get_y_intercept(w_target)
+        pt_is_positive_class = true_classes[0] > 0
+
+        if pt_above_line and pt_is_positive_class:
+            # positive pt above line
+            return True
+        if not pt_above_line and not pt_is_positive_class:
+            # negative pt below line
+            return True
+
+        return False
+
     def plot_hypothesis(self, pts, true_classes, w_hypothesis, w_target):
         self.setup_axes()
 
@@ -29,8 +43,12 @@ class DataVisualizer:
         x, y = tdv.get_line(w_hypothesis, self.x_bound)
         self.ax.plot(x, y, label='hypothesis', color='g')
 
-        self.ax.fill_between(x, y, np.full((1,), self.y_bound), color=(1, 0, 0, 0.15))
-        self.ax.fill_between(x, y, np.full((1,), -self.y_bound), color=(0, 0, 1, 0.15))
+        if self.red_pts_above_line(pts, w_target, true_classes):
+            self.ax.fill_between(x, y, np.full((1,), self.y_bound), color=(1, 0, 0, 0.15))
+            self.ax.fill_between(x, y, np.full((1,), -self.y_bound), color=(0, 0, 1, 0.15))
+        else:
+            self.ax.fill_between(x, y, np.full((1,), self.y_bound), color=(0, 0, 1, 0.15))
+            self.ax.fill_between(x, y, np.full((1,), -self.y_bound), color=(1, 0, 0, 0.15))
 
         self.ax.legend(facecolor='w', fancybox=True, frameon=True, edgecolor='black', borderpad=1)
 
