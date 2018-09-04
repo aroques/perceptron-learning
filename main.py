@@ -23,8 +23,7 @@ def main():
     print('{:24s}: y = {:.2f}x + {:.2f}'.format('Target Function',
                                                 tdv.get_slope(w_target),
                                                 tdv.get_y_intercept(w_target)))
-    error = np.sum(np.not_equal(predictions, y_test)) / num_test_pts
-    print('{0:24s}: {1:.2f}%'.format('Misclassification Error', error * 100))
+    print_error(predictions, y_test)
 
     print()
 
@@ -34,10 +33,14 @@ def main():
     perceptron.fit(x_train, y_train=y_train)
     predictions = perceptron.predict(x_test)
     y_test = np.random.choice(y_train, num_test_pts)
-    error = np.sum(np.not_equal(predictions, y_test)) / num_test_pts
-    print('{0:24s}: {1:.2f}%'.format('Misclassification Error', error * 100))
+    print_error(predictions, y_test)
 
     perceptron.visualize_training()
+
+
+def print_error(predictions, y_test):
+    error = np.sum(np.not_equal(predictions, y_test)) / num_test_pts
+    print('{0:24s}: {1:.2f}%'.format('Misclassification Error', error * 100))
 
 
 def get_y_train(pts, w_target):
