@@ -55,7 +55,7 @@ class DataVisualizer:
 
         self.ax.legend(facecolor='w', fancybox=True, frameon=True, edgecolor='black', borderpad=1)
 
-        plt.pause(0.01)
+        # plt.pause(0.01)
 
     @staticmethod
     def visualize():

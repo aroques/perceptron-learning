@@ -20,7 +20,7 @@ def main():
     print('---------- Linearly Separable Data ----------')
     perceptron.fit(x_train, w_target=w_target)
     predictions = perceptron.predict(x_test)
-    print('{:24s}: y = {:.2f}x + {:.2f}'.format('Target Function',
+    print('{:28s}: y = {:.2f}x + {:.2f}'.format('Target Function',
                                                 tdv.get_slope(w_target),
                                                 tdv.get_y_intercept(w_target)))
     print_error(predictions, y_test)
@@ -40,7 +40,7 @@ def main():
 
 def print_error(predictions, y_test):
     error = np.sum(np.not_equal(predictions, y_test)) / num_test_pts
-    print('{0:24s}: {1:.2f}%'.format('Misclassification Error', error * 100))
+    print('{0:28s}: {1:.2f}%'.format('Out of Sample (Test) Error', error * 100))
 
 
 def get_y_train(pts, w_target):

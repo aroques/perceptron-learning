@@ -25,8 +25,8 @@ class Perceptron:
     def __init__(self, alpha):
         self.alpha = alpha
 
-        self.w_hypothesis = np.random.uniform(-10, 10, 3)
-        self.error = float('inf')
+        self.best_hypothesis = np.random.uniform(-10, 10, 3)
+        self.lowest_error = float('inf')
 
         self.logger = Logger()
         self.dv = None
@@ -39,59 +39,55 @@ class Perceptron:
         :param w_target: will be passed in in the linearly separable case
         :return: None
         """
-        self.w_hypothesis = np.random.uniform(-10, 10, 3)
-        self.error = float('inf')
+        self.best_hypothesis = np.random.uniform(-10, 10, 3)
+        self.lowest_error = float('inf')
+        self.logger = Logger()
+        self.dv = DataVisualizer('Perceptron Learning', x_bound, y_bound)
 
         if w_target is not None:
             y_train = np.sign(np.dot(x_train, w_target))
-            self.w_hypothesis = tdv.get_perpendicular_vector(w_target)
+            self.best_hypothesis = tdv.get_perpendicular_vector(w_target)
 
         pts = x_train[:, 1:]
 
-        self.dv = DataVisualizer('Perceptron Learning', x_bound, y_bound)
-
-        hypothesis = self.w_hypothesis
+        hypothesis = self.best_hypothesis
 
         misclassified_pts = predict_and_evaluate(hypothesis, x_train, y_train)
 
-        self.logger = Logger()
-
-        while self.logger.num_vector_updates < 250 and np.sum(misclassified_pts) > 0:
+        while self.logger.num_vector_updates < 100000 and np.sum(misclassified_pts) > 0:
             for i, misclassified_pt in enumerate(np.nditer(misclassified_pts)):
                 if misclassified_pt:
                     # update rule: w(t + 1) = w(t) + y(t) * x(t) * alpha
-                    hypothesis += (y_train[i] * x_train[i] * self.alpha)
-
-                    self.dv.plot_hypothesis(pts, y_train, hypothesis, w_target)
-
-                    self.logger.num_vector_updates += 1
+                    hypothesis += y_train[i] * x_train[i] * self.alpha
 
                     these_misclassified_pts = predict_and_evaluate(hypothesis, x_train, y_train)
 
                     this_error = calculate_error(np.sum(these_misclassified_pts), x_train.shape[0])
 
-                    if this_error < self.error:
-                        print('this error: {} is less than {}'.format(this_error, self.error))
-                        self.w_hypothesis = hypothesis
-                        self.error = this_error
+                    if this_error < self.lowest_error:
+                        self.best_hypothesis = hypothesis
+                        self.lowest_error = this_error
+
+                    self.logger.num_vector_updates += 1
 
             misclassified_pts = predict_and_evaluate(hypothesis, x_train, y_train)
 
             self.logger.num_iterations += 1
 
-        self.dv.plot_hypothesis(pts, y_train, self.w_hypothesis, w_target)
+        self.dv.plot_hypothesis(pts, y_train, self.best_hypothesis, w_target)
 
         self.print_fit_statistics()
 
     def print_fit_statistics(self):
         self.logger.print_statistics()
 
-        print('{:24s}: y = {:.2f}x + {:.2f}'.format('Hypothesis',
-                                                    tdv.get_slope(self.w_hypothesis),
-                                                    tdv.get_y_intercept(self.w_hypothesis)))
+        print('{:28s}: y = {:.2f}x + {:.2f}'.format('Hypothesis',
+                                                    tdv.get_slope(self.best_hypothesis),
+                                                    tdv.get_y_intercept(self.best_hypothesis)))
+        print('{0:28s}: {1:.2f}%'.format('In Sample (Training) Error', self.lowest_error))
 
     def visualize_training(self):
         self.dv.visualize()
 
     def predict(self, x):
-        return predict(x, self.w_hypothesis)
+        return predict(x, self.best_hypothesis)
