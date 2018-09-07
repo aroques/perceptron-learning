@@ -42,7 +42,15 @@ class Perceptron:
         self.best_hypothesis = np.random.uniform(-10, 10, 3)
         self.lowest_error = float('inf')
         self.logger = Logger()
-        self.dv = DataVisualizer('Perceptron Learning', x_bound, y_bound)
+
+        plot_title = 'Perceptron Learning'
+
+        if w_target is not None:
+            plot_subtitle = 'Linearly Separable Training Data'
+        else:
+            plot_subtitle = 'Non-linearly Separable Training Data'
+
+        self.dv = DataVisualizer(plot_title, plot_subtitle, x_bound, y_bound)
 
         if w_target is not None:
             y_train = np.sign(np.dot(x_train, w_target))
@@ -84,7 +92,7 @@ class Perceptron:
         print('{:28s}: y = {:.2f}x + {:.2f}'.format('Hypothesis',
                                                     tdv.get_slope(self.best_hypothesis),
                                                     tdv.get_y_intercept(self.best_hypothesis)))
-        print('{0:28s}: {1:.2f}%'.format('In Sample (Training) Error', self.lowest_error))
+        print('{0:28s}: {1:.2f}%'.format('In Sample (Training) Error', self.lowest_error * 100))
 
     def visualize_training(self):
         self.dv.visualize()

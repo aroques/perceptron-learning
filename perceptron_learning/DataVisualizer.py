@@ -4,16 +4,19 @@ from . import two_d_vector as tdv
 
 
 class DataVisualizer:
-    def __init__(self, title, x_bound, y_bound):
+    def __init__(self, title, subtitle, x_bound, y_bound):
         plt.style.use('seaborn-whitegrid')
         self.fig, self.ax = plt.subplots()
         self.title = title
+        self.subtitle = subtitle
         self.x_bound = x_bound
         self.y_bound = y_bound
 
     def setup_axes(self):
         self.ax.cla()
-        self.ax.set_title(self.title)
+        self.fig.canvas.set_window_title(self.subtitle)
+        self.fig.suptitle(self.title, fontsize=18)
+        self.ax.set_title(self.subtitle, fontsize=14)
         self.ax.set_xlim(-self.x_bound, self.x_bound)
         self.ax.set_ylim(-self.y_bound, self.y_bound)
 
