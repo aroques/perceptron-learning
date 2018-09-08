@@ -2,6 +2,3 @@
 .ipynb_checkpoints
 workbench.ipynb
 __pycache__
-*.png
-*.tex
-*.ipynb
