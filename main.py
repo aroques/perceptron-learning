@@ -11,24 +11,24 @@ def main():
 
     perceptron = Perceptron(alpha=0.005)
 
-    w_target = np.random.uniform(-10, 10, 3)
+    target_fn = np.random.uniform(-10, 10, 3)
 
     x = get_random_x(num_pts, bound)
 
     x_train, x_test = x[:num_train_pts, :], x[num_train_pts:, :]
-    y_test = np.sign(np.dot(x_test, w_target))
+    y_test = np.sign(np.dot(x_test, target_fn))
 
     print('---------- Linearly Separable Data ----------')
-    perceptron.fit(x_train, w_target=w_target)
+    perceptron.fit(x_train, target_fn=target_fn)
     predictions = perceptron.predict(x_test)
     print('{:28s}: y = {:.2f}x + {:.2f}'.format('Target Function',
-                                                tdv.get_slope(w_target),
-                                                tdv.get_y_intercept(w_target)))
+                                                tdv.get_slope(target_fn),
+                                                tdv.get_y_intercept(target_fn)))
     print_error(predictions, y_test)
 
     print()
 
-    y = get_y(x[:, 1:], w_target)
+    y = get_y(x[:, 1:], target_fn)
     y_train, y_test = y[:num_train_pts], y[num_train_pts:]
 
     print('-------- Non-Linearly Separable Data --------')

@@ -3,20 +3,6 @@ from . import two_d_vector as tdv
 from . import DataVisualizer, Logger
 
 
-def predict_and_evaluate(hypothesis, x_train, y_train):
-    pred_classes = predict(hypothesis, x_train)
-    misclassified_pts = np.not_equal(pred_classes, y_train)
-    return misclassified_pts
-
-
-def predict(x, hypothesis):
-    return np.sign(np.dot(x, hypothesis.T))
-
-
-def calculate_error(num_misclassified_pts, num_pts):
-    return num_misclassified_pts / float(num_pts)
-
-
 class Perceptron:
     """Uses 'pocket' algorithm to keep best hypothesis in it's 'pocket'"""
 
@@ -29,33 +15,23 @@ class Perceptron:
         self.logger = Logger()
         self.dv = None
 
-    def fit(self, x_train, y_train=None, w_target=None):
+    def fit(self, x_train, y_train=None, target_fn=None):
         """Fits the model to the training data (class labels) or target function.
 
         :param x_train: the training data
         :param y_train: will be passed in in the non-linearly separable case
-        :param w_target: will be passed in in the linearly separable case
+        :param target_fn: will be passed in in the linearly separable case
         :return: None
         """
         self.best_hypothesis = np.random.uniform(-10, 10, 3)
         self.lowest_error = float('inf')
         self.logger = Logger()
 
-        plot_title = 'Perceptron Learning'
+        self.dv = get_data_visualizer(target_fn, x_train)
 
-        if w_target is not None:
-            plot_subtitle = 'Linearly Separable Training Data'
-        else:
-            plot_subtitle = 'Non-linearly Separable Training Data'
-
-        x_bound = np.max(np.absolute(x_train[:, 1]))
-        y_bound = np.max(np.absolute(x_train[:, 2]))
-
-        self.dv = DataVisualizer(plot_title, plot_subtitle, x_bound, y_bound)
-
-        if w_target is not None:
-            y_train = np.sign(np.dot(x_train, w_target))
-            self.best_hypothesis = tdv.get_perpendicular_vector(w_target)
+        if target_fn is not None:
+            y_train = np.sign(np.dot(x_train, target_fn))
+            self.best_hypothesis = tdv.get_perpendicular_vector(target_fn)
 
         pts = x_train[:, 1:]
 
@@ -83,7 +59,7 @@ class Perceptron:
 
             self.logger.num_iterations += 1
 
-        self.dv.plot_hypothesis(pts, y_train, self.best_hypothesis, w_target)
+        self.dv.plot_hypothesis(pts, y_train, self.best_hypothesis, target_fn)
 
         self.print_fit_statistics()
 
@@ -100,3 +76,31 @@ class Perceptron:
 
     def predict(self, x):
         return predict(x, self.best_hypothesis)
+
+
+def predict_and_evaluate(hypothesis, x_train, y_train):
+    pred_classes = predict(hypothesis, x_train)
+    misclassified_pts = np.not_equal(pred_classes, y_train)
+    return misclassified_pts
+
+
+def predict(x, hypothesis):
+    return np.sign(np.dot(x, hypothesis.T))
+
+
+def calculate_error(num_misclassified_pts, num_pts):
+    return num_misclassified_pts / float(num_pts)
+
+
+def get_data_visualizer(target_fn, x_train):
+    plot_title = 'Perceptron Learning'
+
+    if target_fn is not None:
+        plot_subtitle = 'Linearly Separable Training Data'
+    else:
+        plot_subtitle = 'Non-linearly Separable Training Data'
+
+    x_bound = np.max(np.absolute(x_train[:, 1]))
+    y_bound = np.max(np.absolute(x_train[:, 2]))
+
+    return DataVisualizer(plot_title, plot_subtitle, x_bound, y_bound)
