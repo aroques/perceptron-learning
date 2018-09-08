@@ -2,8 +2,6 @@ import numpy as np
 from . import two_d_vector as tdv
 from . import DataVisualizer, Logger
 
-x_bound = y_bound = bound = 100
-
 
 def predict_and_evaluate(hypothesis, x_train, y_train):
     pred_classes = predict(hypothesis, x_train)
@@ -49,6 +47,9 @@ class Perceptron:
             plot_subtitle = 'Linearly Separable Training Data'
         else:
             plot_subtitle = 'Non-linearly Separable Training Data'
+
+        x_bound = np.max(np.absolute(x_train[:, 1]))
+        y_bound = np.max(np.absolute(x_train[:, 2]))
 
         self.dv = DataVisualizer(plot_title, plot_subtitle, x_bound, y_bound)
 
