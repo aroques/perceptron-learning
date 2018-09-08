@@ -1,6 +1,6 @@
 # Perceptron Learning
 
-Perceptron learning algorithm in python 3.
+'Pocket' version of the perceptron learning algorithm written in python 3.
 
 ## Installation
 
